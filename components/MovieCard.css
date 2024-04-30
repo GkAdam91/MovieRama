@@ -1,0 +1,31 @@
+
+.card{
+    background-color: cyan;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    gap: 10px;
+    min-width: 300px;
+    width: 50%;
+    padding: 10px;
+}
+
+.details{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.rating{
+    background-color: yellow;
+    border-radius: 5px;
+    padding: 5px;
+    width: max-content;
+}
+
+.year{
+    background-color: yellow;
+    border-radius: 5px;
+    padding: 5px;
+    width: max-content;
+}

@@ -1,13 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>MovieRama</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="components/MovieCard.js" type="text/javascript" defer></script>
+  </head>
+  <body>
     <h1>Welcome to MovieRama!</h1>
 
+    <ul>
+      <movie-card
+        title="The Shawshank Redemption"
+        rating="9.3"
+        year="1994"
+      ></movie-card>
+      <movie-card
+        title="The Godfather"
+        rating="9.2"
+        year="1972"
+      ></movie-card>
+      <movie-card
+        title="The Dark Knight"
+        rating="9.0"
+        year="2008"
+      ></movie-card>
+    </ul>
     <script src="index.js"></script>
-</body>
+  </body>
 </html>
