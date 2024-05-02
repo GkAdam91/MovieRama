@@ -2,77 +2,84 @@ class MovieList extends HTMLElement {
   static observedAttributes = ["fetching"];
   shadow;
   spinner;
+  movieListElement;
+  currentPage = 1;
   constructor() {
     super();
 
     this.shadow = this.attachShadow({ mode: "open" });
+    this.movieListElement = document.createElement("div");
+    this.movieListElement.setAttribute("class", "movie-list");
+    this.shadow.appendChild(this.movieListElement);
     this.spinner = document.createElement("custom-spinner");
     this.shadow.appendChild(this.spinner);
   }
 
   fetching = true;
-
-  fetchNowPlayingMovies() {
-    const url = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}`;
-
-    return fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        this.showMovieList(data.results);
-        return data;
-      })
-      .catch((error) => {
-        console.error(
-          "There has been a problem with your fetch operation:",
-          error
-        );
-      })
-      .finally(() => {
-        this.fetching = false;
-        this.spinner.setAttribute("hidden", true);
-      });
-  }
-
+  loading = true;
   connectedCallback() {
+    console.log("Connected");
     let now_playing = true;
     if (this.hasAttribute("now_playing")) {
       now_playing = this.getAttribute("now_playing");
     }
 
     if (now_playing) {
-      this.fetchNowPlayingMovies();
+      this.loadMovies();
     }
 
-    console.log(this);
+    addEventListener(
+      "scroll",
+      () => {
+        const { scrollTop, scrollHeight, clientHeight } =
+          document.documentElement;
 
-    if (this.hasAttribute("movies")) console.log(this.getAttribute("movies"));
-    else {
-      console.error("You need to provide a movies attribute");
-    }
-
-    const shadow = this.attachShadow({ mode: "open" });
-
-    console.log(this.fetching);
-    if (this.fetching) {
-      //   const spinner = document.createElement("custom-spinner");
-      //   shadow.appendChild(spinner);
-    }
+        if (
+          scrollTop + clientHeight >= scrollHeight - 5 &&
+          this.loading === false
+        ) {
+          this.currentPage++;
+          console.log("Loading more movies...");
+          this.loadMovies(this.currentPage);
+        }
+      },
+      {
+        passive: true,
+      }
+    );
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
     console.log(`Attribute ${name} has changed.`);
   }
 
-  showMovieList = (movieList) => {
-    const movieListElement = document.createElement("div");
-    movieListElement.setAttribute("class", "movie-list");
+  async fetchNowPlayingMovies(page = 1) {
+    const url = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${page}&sort_by=popularity.desc`;
 
+    let response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  }
+
+  async loadMovies(page = 1) {
+    // use this boolean to limit one request at a time
+    this.loading = true;
+
+    this.showSpinner();
+    try {
+      const response = await this.fetchNowPlayingMovies(page);
+      this.showMovieList(response.results);
+    } catch (error) {
+      console.error(`Something wen wrong with fetching movies ${error}`);
+    } finally {
+      this.hideSpinner();
+      this.loading = false;
+    }
+  }
+
+  showMovieList(movieList) {
     movieList.forEach((movie) => {
       const movieCard = document.createElement("movie-card");
       movieCard.setAttribute("title", movie.title);
@@ -80,12 +87,21 @@ class MovieList extends HTMLElement {
       movieCard.setAttribute("genre", movie.genre);
       movieCard.setAttribute("rating", movie.vote_average);
       movieCard.setAttribute("overview", movie.overview);
-      movieCard.setAttribute("poster", `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`);
-      movieListElement.appendChild(movieCard);
+      movieCard.setAttribute(
+        "poster",
+        `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`
+      );
+      this.movieListElement.appendChild(movieCard);
     });
+  }
 
-    this.shadow.appendChild(movieListElement);
-  };
+  showSpinner() {
+    this.spinner.style.display = "block";
+  }
+
+  hideSpinner() {
+    this.spinner.style.display = "none";
+  }
 }
 
 customElements.define("movie-list", MovieList);
