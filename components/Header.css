@@ -1,0 +1,19 @@
+h1{
+    color: #ff0;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.header{
+    background-color: #333;
+    color: #fff;
+    display: block;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+
+    padding: 10px 20px;
+}
