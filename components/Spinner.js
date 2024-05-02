@@ -8,7 +8,7 @@ class Spinner extends HTMLElement{
         const spinner = document.createElement("div");
         spinner.setAttribute("class", "spinner");
 
-        spinner.innerHTML = `Spinning...`;
+        spinner.innerHTML = `Spinning... <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="spinner" />`;
 
         shadow.appendChild(spinner);
     }
