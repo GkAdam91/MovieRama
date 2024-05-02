@@ -13,6 +13,12 @@ class MovieList extends HTMLElement {
     this.shadow.appendChild(this.movieListElement);
     this.spinner = document.createElement("custom-spinner");
     this.shadow.appendChild(this.spinner);
+
+  
+    const linkElement = document.createElement("link");
+    linkElement.setAttribute("rel", "stylesheet");
+    linkElement.setAttribute("href", "components/MovieList.css");
+    this.shadow.appendChild(linkElement);
   }
 
   fetching = true;
