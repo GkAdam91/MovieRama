@@ -4,8 +4,6 @@ class MovieCard extends HTMLElement {
   }
 
   connectedCallback() {
-    console.log(this);
-    console.log(this.getAttribute("title"));
     let title;
     if (this.hasAttribute("title")) {
       title = this.getAttribute("title");
@@ -40,28 +38,46 @@ class MovieCard extends HTMLElement {
       overview = "Default Overview";
     }
 
+    let poster;
+    if (this.hasAttribute("poster")) {
+      poster = this.getAttribute("poster");
+    }
+    else {
+      poster = "https://via.placeholder.com/300";
+    }
+
     const shadow = this.attachShadow({ mode: "open" });
 
     const wrapper = document.createElement("card");
     wrapper.setAttribute("class", "card");
 
-    const titleElement = document.createElement("h2");
-    titleElement.innerHTML = title;
-    wrapper.appendChild(titleElement);
+    const posterElement = document.createElement("img");
+    posterElement.setAttribute("class", "poster");
+    posterElement.src = poster;
+    wrapper.appendChild(posterElement);
 
+    
     const detailsElement = document.createElement("div");
     detailsElement.setAttribute("class", "details");
     wrapper.appendChild(detailsElement);
-
+    
+    const titleElement = document.createElement("h2");
+    titleElement.innerHTML = title;
+    detailsElement.appendChild(titleElement);
+    
+    const detailsSecondRowElement = document.createElement("div");
+    detailsSecondRowElement.setAttribute("class", "details-second-row");
+    detailsElement.appendChild(detailsSecondRowElement);
+    
     const yearElement = document.createElement("p");
     yearElement.setAttribute("class", "year");
     yearElement.innerHTML = year;
-    detailsElement.appendChild(yearElement);
+    detailsSecondRowElement.appendChild(yearElement);
 
     const ratingElement = document.createElement("p");
     ratingElement.setAttribute("class", "rating");
     ratingElement.innerHTML = rating;
-    detailsElement.appendChild(ratingElement);
+    detailsSecondRowElement.appendChild(ratingElement);
 
     const linkElement = document.createElement("link");
     linkElement.setAttribute("rel", "stylesheet");

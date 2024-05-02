@@ -5,12 +5,30 @@
     flex-direction: column;
     border-radius: 10px;
     gap: 10px;
-    min-width: 300px;
-    width: 50%;
     padding: 10px;
+    position: relative;
+    aspect-ratio: 2/3;
+}
+
+.poster{
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
 }
 
 .details{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 2;
+}
+
+.details-second-row{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
