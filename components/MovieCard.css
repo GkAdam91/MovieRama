@@ -1,50 +1,126 @@
+.card {
+  background: linear-gradient(180deg, #b1b1b1, #1d1d1d);
+  background-size: 400% 400%;
+  animation: 2s infinite alternate AnimationName;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  gap: 10px;
+  padding: 10px;
+  max-width: 200px;
+  position: relative;
+  aspect-ratio: 2/3;
+  transition: transform 0.2s;
+}
 
-.card{
-    background-color: cyan;
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card.active {
+  background: #b1b1b1;
+  position: fixed;
+  z-index: 100;
+  left: 10%;
+  top: 10vh;
+  max-width: 100vw;
+  width: 70vw;
+  height: 80vh;
+  flex-direction: row;
+  transition: transform 0.2s, left 0.5s, top 0.5s, width 0.5s, max-width 0.5s,
+    height 0.5s;
+}
+
+@keyframes AnimationName {
+  from {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 51% 100%;
+  }
+  to {
+    background-position: 50% 0%;
+  }
+}
+
+.poster {
+  border-radius: 10px;
+  width: 100%;
+  object-fit: cover;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+}
+
+.poster.active {
+  width: 35%;
+  position: relative;
+  margin-block: auto;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 2;
+  transition: none;
+  height: 100%;
+}
+
+.details.active {
+  display: none;
+}
+
+.active-details {
+  display: block;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.active-details.active {
+  transition: opacity 0.5s;
+  transition-delay: 0.5s;
+  opacity: 1;
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  height: auto;
+}
+
+.details-second-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.overview {
+}
+
+.genres {
     display: flex;
-    flex-direction: column;
-    border-radius: 10px;
-    gap: 10px;
-    padding: 10px;
-    max-width: 200px;
-    position: relative;
-    aspect-ratio: 2/3;
+    align-items: center;
+    text-align: center;
 }
 
-.poster{
-    border-radius: 10px;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-}
-
-.details{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    z-index: 2;
-}
-
-.details-second-row{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.rating{
+.genre-tag{
     background-color: yellow;
     border-radius: 5px;
     padding: 5px;
-    width: max-content;
+    margin: 5px;
 }
 
-.year{
-    background-color: yellow;
-    border-radius: 5px;
-    padding: 5px;
-    width: max-content;
+.rating {
+  background-color: yellow;
+  border-radius: 5px;
+  padding: 5px;
+  width: max-content;
+}
+
+.year {
+  background-color: yellow;
+  border-radius: 5px;
+  padding: 5px;
+  width: max-content;
 }

@@ -14,7 +14,6 @@ class MovieList extends HTMLElement {
     this.spinner = document.createElement("custom-spinner");
     this.shadow.appendChild(this.spinner);
 
-  
     const linkElement = document.createElement("link");
     linkElement.setAttribute("rel", "stylesheet");
     linkElement.setAttribute("href", "components/MovieList.css");
@@ -60,7 +59,7 @@ class MovieList extends HTMLElement {
   }
 
   async fetchNowPlayingMovies(page = 1) {
-    const url = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${page}&sort_by=popularity.desc`;
+    const url = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${page}&sort_by=vote_average`;
 
     let response = await fetch(url);
     if (!response.ok) {
@@ -87,10 +86,11 @@ class MovieList extends HTMLElement {
 
   showMovieList(movieList) {
     movieList.forEach((movie) => {
+      // console.log(movie);
       const movieCard = document.createElement("movie-card");
       movieCard.setAttribute("title", movie.title);
       movieCard.setAttribute("year", movie.release_date);
-      movieCard.setAttribute("genre", movie.genre);
+      movieCard.setAttribute("genre_ids", movie.genre_ids);
       movieCard.setAttribute("rating", movie.vote_average);
       movieCard.setAttribute("overview", movie.overview);
       movieCard.setAttribute(
