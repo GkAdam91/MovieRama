@@ -5,7 +5,6 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 
 const movieList = [];
 
-
 const app = document.querySelector("#app");
 const shadow = app.attachShadow({ mode: "open" });
 
@@ -22,9 +21,9 @@ const movieListElement = document.createElement("movie-list");
 movieListElement.setAttribute("movies", JSON.stringify(movieList));
 mainApp.appendChild(movieListElement);
 
-const footerElement = document.createElement("footer-element");
-footerElement.setAttribute("class", "footer");
-shadow.appendChild(footerElement);
+// const footerElement = document.createElement("footer-element");
+// footerElement.setAttribute("class", "footer");
+// shadow.appendChild(footerElement);
 
 const linkElement = document.createElement("link");
 linkElement.setAttribute("rel", "stylesheet");
