@@ -6,13 +6,16 @@ class HeaderElement extends HTMLElement {
 
   connectedCallback() {
     const shadow = this.shadowRoot;
-    const header = document.createElement("header");    
-    header.setAttribute("class", "header");
-    
     const h1 = document.createElement("h1");
     h1.textContent = "MovieRama";
-    header.appendChild(h1);
-    shadow.appendChild(header);
+    shadow.appendChild(h1);
+
+    const search = document.createElement("input");
+    search.setAttribute("class", "search");
+    search.setAttribute("placeholder", "Search for a movie...");
+    search.setAttribute("type", "text");
+    search.setAttribute("id", "search");
+    shadow.appendChild(search);
 
     const linkElement = document.createElement("link");
     linkElement.setAttribute("rel", "stylesheet");

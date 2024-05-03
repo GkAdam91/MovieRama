@@ -1,13 +1,8 @@
-const API_KEY = 'STRING_TO_REPLACE_THE_KEY';
-const BASE_URL = 'https://api.themoviedb.org/3';
-
-
-
-const movieList = [];
+const API_KEY = "STRING_TO_REPLACE_THE_KEY";
+const BASE_URL = "https://api.themoviedb.org/3";
 
 const app = document.querySelector("#app");
 const shadow = app.attachShadow({ mode: "open" });
-
 
 const headerElement = document.createElement("header-element");
 headerElement.setAttribute("class", "header");
@@ -18,7 +13,7 @@ mainApp.setAttribute("class", "main-app");
 shadow.appendChild(mainApp);
 
 const movieListElement = document.createElement("movie-list");
-movieListElement.setAttribute("movies", JSON.stringify(movieList));
+movieListElement.setAttribute("id", "movie-list");
 mainApp.appendChild(movieListElement);
 
 // const footerElement = document.createElement("footer-element");
@@ -30,3 +25,13 @@ linkElement.setAttribute("rel", "stylesheet");
 linkElement.setAttribute("href", "styles.css");
 shadow.appendChild(linkElement);
 
+customElements.whenDefined("movie-list").then(() => {
+  customElements.whenDefined("header-element").then(() => {
+    const list = mainApp.querySelector("#movie-list");
+    const searchElement = headerElement.shadowRoot. querySelector("#search");
+    console.log(headerElement.children);
+    searchElement.addEventListener("input", (event) => {
+      list.showMovieListForSearch(event.target.value);
+    });
+  });
+});

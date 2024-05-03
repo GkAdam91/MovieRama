@@ -5,9 +5,10 @@ class MovieList extends HTMLElement {
   movieListElement;
   currentPage = 1;
   genres;
+  searchTerm = "";
   constructor() {
     super();
-
+    console.log("MovieList constructor");
     this.shadow = this.attachShadow({ mode: "open" });
     this.movieListElement = document.createElement("div");
     this.movieListElement.setAttribute("class", "movie-list");
@@ -19,6 +20,12 @@ class MovieList extends HTMLElement {
     linkElement.setAttribute("rel", "stylesheet");
     linkElement.setAttribute("href", "components/MovieList.css");
     this.shadow.appendChild(linkElement);
+  }
+
+  showMovieListForSearch(searchTerm) {
+    this.clearMovieList();
+
+    this.loadMovies(1, searchTerm);
   }
 
   fetching = true;
@@ -49,7 +56,7 @@ class MovieList extends HTMLElement {
           this.loading === false
         ) {
           this.currentPage++;
-          this.loadMovies(this.currentPage);
+          this.loadMovies(this.currentPage, this.searchTerm);
         }
       },
       {
@@ -62,9 +69,13 @@ class MovieList extends HTMLElement {
     console.log(`Attribute ${name} has changed.`);
   }
 
-  async fetchNowPlayingMovies(page = 1) {
-    const url = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${page}&sort_by=vote_average`;
-
+  async fetchMovies(page = 1, searchTerm = "") {
+    let url;
+    if (searchTerm !== "") {
+      url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchTerm}&page=${page}`;
+    } else {
+      url = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${page}&sort_by=vote_average`;
+    }
     let response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -72,13 +83,14 @@ class MovieList extends HTMLElement {
     return await response.json();
   }
 
-  async loadMovies(page = 1) {
+  async loadMovies(page = 1, searchTerm = "") {
     // use this boolean to limit one request at a time
     this.loading = true;
-
     this.showSpinner();
     try {
-      const response = await this.fetchNowPlayingMovies(page);
+      const response = await this.fetchMovies(page, searchTerm);
+      console.log(response);
+
       this.showMovieList(response.results);
     } catch (error) {
       console.error(`Something wen wrong with fetching movies ${error}`);
@@ -86,6 +98,10 @@ class MovieList extends HTMLElement {
       this.hideSpinner();
       this.loading = false;
     }
+  }
+
+  clearMovieList() {
+    this.movieListElement.innerHTML = "";
   }
 
   showMovieList(movieList) {
