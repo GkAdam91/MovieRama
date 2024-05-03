@@ -21,3 +21,7 @@
     grid-template-columns: auto auto auto;
   }
 }
+
+.movie-card{
+  display: flex;
+}

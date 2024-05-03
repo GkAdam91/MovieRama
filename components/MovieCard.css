@@ -1,7 +1,5 @@
 .card {
-  background: linear-gradient(180deg, #b1b1b1, #1d1d1d);
-  background-size: 400% 400%;
-  animation: 2s infinite alternate AnimationName;
+  background: #b1b1b1;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
@@ -18,7 +16,6 @@
 }
 
 .card.active {
-  background: #b1b1b1;
   position: fixed;
   z-index: 100;
   left: 10%;
@@ -44,17 +41,37 @@
   }
 }
 
-.poster {
-  border-radius: 10px;
-  width: 100%;
-  object-fit: cover;
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
+.title{
+  font-size: 1.5em;
+  font-weight: bold;
 }
 
-.poster.active {
+.title.active{
+  display: none;
+}
+
+.poster-preloader{
+  background: linear-gradient(180deg, #b1b1b1, #1d1d1d);
+  background-size: 400% 400%;
+  animation: 2s infinite alternate AnimationName;
+  border-radius: 10px;
+  width: 100%;
+  aspect-ratio: 2/3;
+  /* object-fit: cover; */
+  /* position: absolute; */
+  z-index: 1;
+  /* top: 0; */
+  /* left: 0; */
+}
+
+.poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.poster-preloader.active {
   width: 35%;
   position: relative;
 }
@@ -65,7 +82,6 @@
   justify-content: space-between;
   z-index: 2;
   transition: none;
-  height: 100%;
 }
 
 .details.active {

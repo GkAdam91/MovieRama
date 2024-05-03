@@ -67,19 +67,24 @@ class MovieCard extends HTMLElement {
     const wrapper = document.createElement("card");
     wrapper.setAttribute("class", "card");
 
+    const posterPreloaderElement = document.createElement("div");
+    posterPreloaderElement.setAttribute("class", "poster-preloader");
+    wrapper.appendChild(posterPreloaderElement);
+
     const posterElement = document.createElement("img");
     posterElement.setAttribute("class", "poster");
-    posterElement.src = poster;
-    wrapper.appendChild(posterElement);
+    posterElement.src = `https://image.tmdb.org/t/p/original/${poster}?api_key=${API_KEY}`;
+    posterPreloaderElement.appendChild(posterElement);
+
+    const titleElement = document.createElement("h2");
+    titleElement.setAttribute("class", "title");
+    titleElement.innerHTML = title;
+    wrapper.appendChild(titleElement);
 
     // card in list view details
     const detailsElement = document.createElement("div");
     detailsElement.setAttribute("class", "details");
     wrapper.appendChild(detailsElement);
-
-    const titleElement = document.createElement("h2");
-    titleElement.innerHTML = title;
-    detailsElement.appendChild(titleElement);
 
     const detailsSecondRowElement = document.createElement("div");
     detailsSecondRowElement.setAttribute("class", "details-second-row");
@@ -142,9 +147,10 @@ class MovieCard extends HTMLElement {
 
       wrapper.addEventListener("click", () => {
         wrapper.classList.toggle("active");
-        posterElement.classList.toggle("active");
+        posterPreloaderElement.classList.toggle("active");
         detailsElement.classList.toggle("active");
         activeDetailsElement.classList.toggle("active");
+        titleElement.classList.toggle("active");
         if (!this.hasBeenExpandedBefore) {
           this.createVideoElement(id, activeDetailsElement);
           this.createReviewsElement(id, activeDetailsElement);
@@ -248,15 +254,12 @@ class MovieCard extends HTMLElement {
         movieCard.setAttribute("id", movie.id);
         movieCard.setAttribute("title", movie.title);
         movieCard.setAttribute("clickable", "false");
-        movieCard.setAttribute("year", movie.release_date);
+        movieCard.setAttribute("year", movie.release_date.split("-")[0]);
         movieCard.setAttribute(
           "rating",
           (Math.round(movie.vote_average * 10) / 10) * 10
         );
-        movieCard.setAttribute(
-          "poster",
-          `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`
-        );
+        movieCard.setAttribute("poster", movie.poster_path);
         similarMoviesElement.appendChild(movieCard);
       });
     });

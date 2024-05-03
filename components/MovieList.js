@@ -109,7 +109,7 @@ class MovieList extends HTMLElement {
       const movieCard = document.createElement("movie-card");
       movieCard.setAttribute("id", movie.id);
       movieCard.setAttribute("title", movie.title);
-      movieCard.setAttribute("year", movie.release_date);
+      movieCard.setAttribute("year", movie.release_date.split("-")[0]);
       movieCard.setAttribute("genre_ids", this.getGenreNames(movie.genre_ids));
       movieCard.setAttribute(
         "rating",
@@ -121,6 +121,7 @@ class MovieList extends HTMLElement {
         "poster",
         `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`
       );
+      movieCard.classList.add("movie-card");
       this.movieListElement.appendChild(movieCard);
     });
     const movieCards = this.movieListElement.querySelectorAll("movie-card");
