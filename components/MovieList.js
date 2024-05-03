@@ -117,10 +117,7 @@ class MovieList extends HTMLElement {
       );
       movieCard.setAttribute("overview", movie.overview);
       movieCard.setAttribute("loadingTrailer", false);
-      movieCard.setAttribute(
-        "poster",
-        `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`
-      );
+      movieCard.setAttribute("poster", movie.poster_path);
       movieCard.classList.add("movie-card");
       this.movieListElement.appendChild(movieCard);
     });

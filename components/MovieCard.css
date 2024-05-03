@@ -1,3 +1,8 @@
+
+.movie-card{
+  display: flex;
+}
+
 .card {
   background: #b1b1b1;
   display: flex;
@@ -5,6 +10,7 @@
   border-radius: 10px;
   gap: 10px;
   padding: 10px;
+  min-width: 50px;
   max-width: 200px;
   position: relative;
   aspect-ratio: 2/3;
@@ -41,16 +47,16 @@
   }
 }
 
-.title{
+.title {
   font-size: 1.5em;
   font-weight: bold;
 }
 
-.title.active{
+.title.active {
   display: none;
 }
 
-.poster-preloader{
+.poster-preloader {
   background: linear-gradient(180deg, #b1b1b1, #1d1d1d);
   background-size: 400% 400%;
   animation: 2s infinite alternate AnimationName;
@@ -104,7 +110,7 @@
   height: auto;
   width: auto;
   overscroll-behavior-y: contain;
-
+  overflow-y: scroll;
 }
 
 .details-second-row {
@@ -149,15 +155,19 @@
   align-items: center;
   height: 30vh;
   width: fit-content;
+  align-self: center;
   aspect-ratio: 16/9;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 3;
 }
 
 .similar-movies {
+  background: grey;
+  border-radius: 10px;
   display: flex;
   gap: 10px;
-  overflow-x: auto;
-  overflow-y: hidden;
+  min-height: 500px;
+  justify-content: center;
   padding: 10px;
+  overflow-x: auto;
 }

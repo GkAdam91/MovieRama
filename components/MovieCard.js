@@ -260,6 +260,8 @@ class MovieCard extends HTMLElement {
           (Math.round(movie.vote_average * 10) / 10) * 10
         );
         movieCard.setAttribute("poster", movie.poster_path);
+        movieCard.classList.add("movie-card");
+
         similarMoviesElement.appendChild(movieCard);
       });
     });
