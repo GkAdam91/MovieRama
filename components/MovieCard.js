@@ -3,13 +3,31 @@ class MovieCard extends HTMLElement {
     super();
   }
 
+  hasVideo = false;
+
   connectedCallback() {
+    let id;
+    if (this.hasAttribute("id")) {
+      id = this.getAttribute("id");
+    } else {
+      throw new Error("Movie ID is required");
+    }
+
+    let isClickable;
+    if (this.hasAttribute("clickable")) {
+      isClickable = this.getAttribute("clickable");
+    } else {
+      isClickable = "true";
+    }
+
     let title;
     if (this.hasAttribute("title")) {
       title = this.getAttribute("title");
     } else {
       title = "Default Title";
     }
+    console.log(title, isClickable);
+
     let year;
     if (this.hasAttribute("year")) {
       year = this.getAttribute("year");
@@ -21,7 +39,7 @@ class MovieCard extends HTMLElement {
     if (this.hasAttribute("genre_ids")) {
       genre = this.getAttribute("genre_ids");
     } else {
-      genre = ["1", "2", "3"];
+      genre = "1, 2, 3";
     }
 
     let rating;
@@ -79,55 +97,63 @@ class MovieCard extends HTMLElement {
     detailsSecondRowElement.appendChild(ratingElement);
 
     // card enlarged details
-    const activeDetailsElement = document.createElement("div");
-    activeDetailsElement.setAttribute("class", "active-details");
-    wrapper.appendChild(activeDetailsElement);
+    if (isClickable === "true") {
+      const activeDetailsElement = document.createElement("div");
+      activeDetailsElement.setAttribute("class", "active-details");
+      wrapper.appendChild(activeDetailsElement);
 
-    const titleElementDetails = document.createElement("h2");
-    titleElementDetails.innerHTML = title;
-    activeDetailsElement.appendChild(titleElementDetails);
+      const titleElementDetails = document.createElement("h2");
+      titleElementDetails.innerHTML = title;
+      activeDetailsElement.appendChild(titleElementDetails);
 
-    const detailsSecondRowElementDetails = document.createElement("div");
-    detailsSecondRowElementDetails.setAttribute("class", "details-second-row");
-    activeDetailsElement.appendChild(detailsSecondRowElementDetails);
+      const detailsSecondRowElementDetails = document.createElement("div");
+      detailsSecondRowElementDetails.setAttribute(
+        "class",
+        "details-second-row"
+      );
+      activeDetailsElement.appendChild(detailsSecondRowElementDetails);
 
-    const yearElementDetails = document.createElement("p");
-    yearElementDetails.setAttribute("class", "year");
-    yearElementDetails.innerHTML = year;
-    detailsSecondRowElementDetails.appendChild(yearElementDetails);
+      const yearElementDetails = document.createElement("p");
+      yearElementDetails.setAttribute("class", "year");
+      yearElementDetails.innerHTML = year;
+      detailsSecondRowElementDetails.appendChild(yearElementDetails);
 
-    const ratingElementDetails = document.createElement("p");
-    ratingElementDetails.setAttribute("class", "rating");
-    ratingElementDetails.innerHTML = rating;
-    detailsSecondRowElementDetails.appendChild(ratingElementDetails);
-    activeDetailsElement.appendChild(titleElementDetails);
-    activeDetailsElement.appendChild(detailsSecondRowElementDetails);
+      const ratingElementDetails = document.createElement("p");
+      ratingElementDetails.setAttribute("class", "rating");
+      ratingElementDetails.innerHTML = rating;
+      detailsSecondRowElementDetails.appendChild(ratingElementDetails);
+      activeDetailsElement.appendChild(titleElementDetails);
+      activeDetailsElement.appendChild(detailsSecondRowElementDetails);
 
-    const genreElement = document.createElement("p");
-    genreElement.setAttribute("class", "genres");
-    genreElement.innerHTML = "Genres: ";
-    genre.split(",").forEach((genreId) => {
-      // const genreName = genres.find((genre) => genre.id === genreId).name;
-      // genreElement.innerHTML += genreName + " ";
-      const genreTagElement = document.createElement("span");
-      genreTagElement.setAttribute("class", "genre-tag");
-      genreTagElement.innerHTML = genreId;
-      genreElement.appendChild(genreTagElement);
-    });
-    activeDetailsElement.appendChild(genreElement);
+      const genreElement = document.createElement("p");
+      genreElement.setAttribute("class", "genres");
+      genreElement.innerHTML = "Genres: ";
+      genre.split(",").forEach((genreId) => {
+        // const genreName = genres.find((genre) => genre.id === genreId).name;
+        // genreElement.innerHTML += genreName + " ";
+        const genreTagElement = document.createElement("span");
+        genreTagElement.setAttribute("class", "genre-tag");
+        genreTagElement.innerHTML = genreId;
+        genreElement.appendChild(genreTagElement);
+      });
+      activeDetailsElement.appendChild(genreElement);
 
-    const overviewElement = document.createElement("p");
-    overviewElement.setAttribute("class", "overview");
-    overviewElement.innerHTML = overview;
-    activeDetailsElement.appendChild(overviewElement);
+      const overviewElement = document.createElement("p");
+      overviewElement.setAttribute("class", "overview");
+      overviewElement.innerHTML = overview;
+      activeDetailsElement.appendChild(overviewElement);
 
-    wrapper.addEventListener("click", () => {
-      wrapper.classList.toggle("active");
-      posterElement.classList.toggle("active");
-      detailsElement.classList.toggle("active");
-      activeDetailsElement.classList.toggle("active");
-    });
-
+      wrapper.addEventListener("click", () => {
+        wrapper.classList.toggle("active");
+        posterElement.classList.toggle("active");
+        detailsElement.classList.toggle("active");
+        activeDetailsElement.classList.toggle("active");
+        if (!this.hasVideo) {
+          this.createVideoElement(id, activeDetailsElement);
+          this.createSimilarMoviesElement(id, activeDetailsElement);
+        }
+      });
+    }
     const linkElement = document.createElement("link");
     linkElement.setAttribute("rel", "stylesheet");
     linkElement.setAttribute("href", "components/MovieCard.css");
@@ -135,6 +161,62 @@ class MovieCard extends HTMLElement {
     shadow.appendChild(wrapper);
 
     shadow.appendChild(linkElement);
+  }
+
+  async createVideoElement(movieId, activeDetailsElement) {
+    let link = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}`;
+    let response = await fetch(link);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    await response.json().then((data) => {
+      if (data.results.length > 0) {
+        let videoKey = this.getFirstTrailerKey(data.results);
+        let videoLink = `https://www.youtube.com/embed/${videoKey}`;
+        let videoElement = document.createElement("iframe");
+        videoElement.setAttribute("class", "video");
+        videoElement.src = videoLink;
+        activeDetailsElement.appendChild(videoElement);
+        this.hasVideo = true;
+      }
+    });
+  }
+
+  getFirstTrailerKey(results) {
+    for (let i = 0; i < results.length; i++) {
+      if (results[i].type === "Trailer" && results[i].site === "YouTube") {
+        return results[i].key;
+      }
+    }
+  }
+
+  async createSimilarMoviesElement(movieId, activeDetailsElement) {
+    let link = `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}`;
+    let response = await fetch(link);
+
+    let similarMoviesElement = document.createElement("div");
+    similarMoviesElement.setAttribute("class", "similar-movies");
+    activeDetailsElement.appendChild(similarMoviesElement);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    await response.json().then((data) => {
+      console.log(data.results);
+      data.results.forEach((movie) => {
+        const movieCard = document.createElement("movie-card");
+        movieCard.setAttribute("id", movie.id);
+        movieCard.setAttribute("flex-grow", "0");
+        movieCard.setAttribute("flex-shrink", "0");
+        movieCard.setAttribute("title", movie.title);
+        movieCard.setAttribute("clickable", "false");
+        movieCard.setAttribute(
+          "poster",
+          `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`
+        );
+        similarMoviesElement.appendChild(movieCard);
+      });
+    });
   }
 }
 

@@ -23,7 +23,6 @@ class MovieList extends HTMLElement {
   fetching = true;
   loading = true;
   connectedCallback() {
-    console.log("Connected");
     let now_playing = true;
     if (this.hasAttribute("now_playing")) {
       now_playing = this.getAttribute("now_playing");
@@ -44,7 +43,6 @@ class MovieList extends HTMLElement {
           this.loading === false
         ) {
           this.currentPage++;
-          console.log("Loading more movies...");
           this.loadMovies(this.currentPage);
         }
       },
@@ -86,18 +84,23 @@ class MovieList extends HTMLElement {
 
   showMovieList(movieList) {
     movieList.forEach((movie) => {
-      // console.log(movie);
       const movieCard = document.createElement("movie-card");
+      movieCard.setAttribute("id", movie.id);
       movieCard.setAttribute("title", movie.title);
       movieCard.setAttribute("year", movie.release_date);
       movieCard.setAttribute("genre_ids", movie.genre_ids);
       movieCard.setAttribute("rating", movie.vote_average);
       movieCard.setAttribute("overview", movie.overview);
+      movieCard.setAttribute("loadingTrailer", false);
       movieCard.setAttribute(
         "poster",
         `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`
       );
       this.movieListElement.appendChild(movieCard);
+    });
+    const movieCards = this.movieListElement.querySelectorAll("movie-card");
+    movieCards.forEach((movieCard) => {
+      movieCard.setAttribute("title", "true");
     });
   }
 
