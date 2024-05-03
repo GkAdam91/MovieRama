@@ -4,6 +4,7 @@ class MovieList extends HTMLElement {
   spinner;
   movieListElement;
   currentPage = 1;
+  genres;
   constructor() {
     super();
 
@@ -22,7 +23,12 @@ class MovieList extends HTMLElement {
 
   fetching = true;
   loading = true;
-  connectedCallback() {
+  async connectedCallback() {
+    const genreClass = new Genres();
+    await genreClass.loadGenres();
+    this.genres = genreClass.getGenres();
+    console.log(this.genres);
+
     let now_playing = true;
     if (this.hasAttribute("now_playing")) {
       now_playing = this.getAttribute("now_playing");
@@ -88,8 +94,11 @@ class MovieList extends HTMLElement {
       movieCard.setAttribute("id", movie.id);
       movieCard.setAttribute("title", movie.title);
       movieCard.setAttribute("year", movie.release_date);
-      movieCard.setAttribute("genre_ids", movie.genre_ids);
-      movieCard.setAttribute("rating", movie.vote_average);
+      movieCard.setAttribute("genre_ids", this.getGenreNames(movie.genre_ids));
+      movieCard.setAttribute(
+        "rating",
+        (Math.round(movie.vote_average * 10) / 10) * 10
+      );
       movieCard.setAttribute("overview", movie.overview);
       movieCard.setAttribute("loadingTrailer", false);
       movieCard.setAttribute(
@@ -110,6 +119,15 @@ class MovieList extends HTMLElement {
 
   hideSpinner() {
     this.spinner.style.display = "none";
+  }
+
+  getGenreNames(genre_ids) {
+    let genreNames = [];
+    genre_ids.forEach((genre_id) => {
+      const genre = this.genres.find((genre) => genre.id === genre_id);
+      genreNames.push(genre.name);
+    });
+    return genreNames;
   }
 }
 

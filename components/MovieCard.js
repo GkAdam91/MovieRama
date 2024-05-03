@@ -3,7 +3,7 @@ class MovieCard extends HTMLElement {
     super();
   }
 
-  hasVideo = false;
+  hasBeenExpandedBefore = false;
 
   connectedCallback() {
     let id;
@@ -26,7 +26,6 @@ class MovieCard extends HTMLElement {
     } else {
       title = "Default Title";
     }
-    console.log(title, isClickable);
 
     let year;
     if (this.hasAttribute("year")) {
@@ -93,7 +92,7 @@ class MovieCard extends HTMLElement {
 
     const ratingElement = document.createElement("p");
     ratingElement.setAttribute("class", "rating");
-    ratingElement.innerHTML = rating;
+    ratingElement.innerHTML = `${rating}%`;
     detailsSecondRowElement.appendChild(ratingElement);
 
     // card enlarged details
@@ -120,7 +119,7 @@ class MovieCard extends HTMLElement {
 
       const ratingElementDetails = document.createElement("p");
       ratingElementDetails.setAttribute("class", "rating");
-      ratingElementDetails.innerHTML = rating;
+      ratingElementDetails.innerHTML = `${rating}%`;
       detailsSecondRowElementDetails.appendChild(ratingElementDetails);
       activeDetailsElement.appendChild(titleElementDetails);
       activeDetailsElement.appendChild(detailsSecondRowElementDetails);
@@ -129,8 +128,6 @@ class MovieCard extends HTMLElement {
       genreElement.setAttribute("class", "genres");
       genreElement.innerHTML = "Genres: ";
       genre.split(",").forEach((genreId) => {
-        // const genreName = genres.find((genre) => genre.id === genreId).name;
-        // genreElement.innerHTML += genreName + " ";
         const genreTagElement = document.createElement("span");
         genreTagElement.setAttribute("class", "genre-tag");
         genreTagElement.innerHTML = genreId;
@@ -148,8 +145,9 @@ class MovieCard extends HTMLElement {
         posterElement.classList.toggle("active");
         detailsElement.classList.toggle("active");
         activeDetailsElement.classList.toggle("active");
-        if (!this.hasVideo) {
+        if (!this.hasBeenExpandedBefore) {
           this.createVideoElement(id, activeDetailsElement);
+          this.createReviewsElement(id, activeDetailsElement);
           this.createSimilarMoviesElement(id, activeDetailsElement);
         }
       });
@@ -178,7 +176,7 @@ class MovieCard extends HTMLElement {
         videoElement.setAttribute("class", "video");
         videoElement.src = videoLink;
         activeDetailsElement.appendChild(videoElement);
-        this.hasVideo = true;
+        this.hasBeenExpandedBefore = true;
       }
     });
   }
@@ -189,6 +187,48 @@ class MovieCard extends HTMLElement {
         return results[i].key;
       }
     }
+  }
+
+  async createReviewsElement(movieId, activeDetailsElement) {
+    let link = `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}`;
+    let response = await fetch(link);
+
+    let reviewsElement = document.createElement("div");
+    reviewsElement.setAttribute("class", "reviews");
+    activeDetailsElement.appendChild(reviewsElement);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    await response.json().then((data) => {
+      console.log(data.results);
+
+      if (data.results.length >= 2) {
+        for (let i = 0; i < 2; i++) {
+          const reviewElement = this.createReviewElement(data.results[i]);
+          reviewsElement.appendChild(reviewElement);
+        }
+      } else if (data.results.length === 1) {
+        reviewsElement.appendChild(this.createReviewElement(data.results[0]));
+      } else {
+        activeDetailsElement.removeChild(reviewsElement);
+      }
+    });
+  }
+
+  createReviewElement(review) {
+    const reviewElement = document.createElement("div");
+    reviewElement.setAttribute("class", "review");
+
+    const authorElement = document.createElement("p");
+    authorElement.setAttribute("class", "author");
+    authorElement.innerHTML = review.author;
+    reviewElement.appendChild(authorElement);
+
+    const contentElement = document.createElement("p");
+    contentElement.setAttribute("class", "content");
+    contentElement.innerHTML = review.content;
+    reviewElement.appendChild(contentElement);
+    return reviewElement;
   }
 
   async createSimilarMoviesElement(movieId, activeDetailsElement) {
@@ -206,10 +246,13 @@ class MovieCard extends HTMLElement {
       data.results.forEach((movie) => {
         const movieCard = document.createElement("movie-card");
         movieCard.setAttribute("id", movie.id);
-        movieCard.setAttribute("flex-grow", "0");
-        movieCard.setAttribute("flex-shrink", "0");
         movieCard.setAttribute("title", movie.title);
         movieCard.setAttribute("clickable", "false");
+        movieCard.setAttribute("year", movie.release_date);
+        movieCard.setAttribute(
+          "rating",
+          (Math.round(movie.vote_average * 10) / 10) * 10
+        );
         movieCard.setAttribute(
           "poster",
           `https://image.tmdb.org/t/p/original/${movie.poster_path}?api_key=${API_KEY}`
