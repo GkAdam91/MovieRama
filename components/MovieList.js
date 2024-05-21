@@ -1,4 +1,5 @@
 import css from "bundle-text:./MovieList.css";
+import DOMPurify from "dompurify";
 import { Genres } from "../models/Genres";
 class MovieList extends HTMLElement {
   static observedAttributes = ["fetching"];
@@ -102,7 +103,7 @@ class MovieList extends HTMLElement {
   }
 
   clearMovieList() {
-    this.movieListElement.innerHTML = "";
+    this.movieListElement.innerHTML = DOMPurify.sanitize("");
   }
 
   showMovieList(movieList) {

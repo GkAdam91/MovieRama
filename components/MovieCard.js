@@ -1,5 +1,5 @@
 import css from "bundle-text:./MovieCard.css";
-
+import DOMPurify from "dompurify";
 class MovieCard extends HTMLElement {
   constructor() {
     super();
@@ -93,12 +93,12 @@ class MovieCard extends HTMLElement {
 
     const yearElement = document.createElement("p");
     yearElement.setAttribute("class", "year");
-    yearElement.innerHTML = year;
+    yearElement.innerHTML = DOMPurify.sanitize(year);
     detailsSecondRowElement.appendChild(yearElement);
 
     const ratingElement = document.createElement("p");
     ratingElement.setAttribute("class", "rating");
-    ratingElement.innerHTML = `${rating}%`;
+    ratingElement.innerHTML = DOMPurify.sanitize(`${rating}%`);
     detailsSecondRowElement.appendChild(ratingElement);
 
     // card enlarged details
@@ -108,7 +108,7 @@ class MovieCard extends HTMLElement {
       wrapper.appendChild(activeDetailsElement);
 
       const titleElementDetails = document.createElement("h2");
-      titleElementDetails.innerHTML = title;
+      titleElementDetails.innerHTML =  DOMPurify.sanitize(title);
       activeDetailsElement.appendChild(titleElementDetails);
 
       const detailsSecondRowElementDetails = document.createElement("div");
@@ -120,30 +120,30 @@ class MovieCard extends HTMLElement {
 
       const yearElementDetails = document.createElement("p");
       yearElementDetails.setAttribute("class", "year");
-      yearElementDetails.innerHTML = year;
+      yearElementDetails.innerHTML =  DOMPurify.sanitize(year);
       detailsSecondRowElementDetails.appendChild(yearElementDetails);
 
       const ratingElementDetails = document.createElement("p");
       ratingElementDetails.setAttribute("class", "rating");
-      ratingElementDetails.innerHTML = `${rating}%`;
+      ratingElementDetails.innerHTML =  DOMPurify.sanitize(`${rating}%`);
       detailsSecondRowElementDetails.appendChild(ratingElementDetails);
       activeDetailsElement.appendChild(titleElementDetails);
       activeDetailsElement.appendChild(detailsSecondRowElementDetails);
 
       const genreElement = document.createElement("p");
       genreElement.setAttribute("class", "genres");
-      genreElement.innerHTML = "Genres: ";
+      genreElement.innerHTML =  DOMPurify.sanitize("Genres: ");
       genre.split(",").forEach((genreId) => {
         const genreTagElement = document.createElement("span");
         genreTagElement.setAttribute("class", "genre-tag");
-        genreTagElement.innerHTML = genreId;
+        genreTagElement.innerHTML =  DOMPurify.sanitize(genreId);
         genreElement.appendChild(genreTagElement);
       });
       activeDetailsElement.appendChild(genreElement);
 
       const overviewElement = document.createElement("p");
       overviewElement.setAttribute("class", "overview");
-      overviewElement.innerHTML = overview;
+      overviewElement.innerHTML =  DOMPurify.sanitize(overview);
       activeDetailsElement.appendChild(overviewElement);
 
       wrapper.addEventListener("click", () => {
@@ -228,12 +228,12 @@ class MovieCard extends HTMLElement {
 
     const authorElement = document.createElement("p");
     authorElement.setAttribute("class", "author");
-    authorElement.innerHTML = review.author;
+    authorElement.innerHTML =  DOMPurify.sanitize(review.author);
     reviewElement.appendChild(authorElement);
 
     const contentElement = document.createElement("p");
     contentElement.setAttribute("class", "content");
-    contentElement.innerHTML = review.content;
+    contentElement.innerHTML =  DOMPurify.sanitize(review.content);
     reviewElement.appendChild(contentElement);
     return reviewElement;
   }

@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 class Spinner extends HTMLElement{
     constructor(){
         super();
@@ -8,7 +9,7 @@ class Spinner extends HTMLElement{
         const spinner = document.createElement("div");
         spinner.setAttribute("class", "spinner");
 
-        spinner.innerHTML = `Spinning... <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="spinner" />`;
+        spinner.innerHTML = DOMPurify.sanitize(`Spinning... <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="spinner" />`);
         
         shadow.appendChild(spinner);
     }
