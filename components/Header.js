@@ -1,3 +1,5 @@
+import css from "bundle-text:./Header.css";
+
 class HeaderElement extends HTMLElement {
   constructor() {
     super();
@@ -6,20 +8,20 @@ class HeaderElement extends HTMLElement {
 
   connectedCallback() {
     const shadow = this.shadowRoot;
+    
     const h1 = document.createElement("h1");
     h1.textContent = "MovieRama";
     shadow.appendChild(h1);
 
     const search = document.createElement("input");
-    search.setAttribute("class", "search");
+    search.className = "search";
     search.setAttribute("placeholder", "Search for a movie...");
     search.setAttribute("type", "text");
     search.setAttribute("id", "search");
     shadow.appendChild(search);
 
-    const linkElement = document.createElement("link");
-    linkElement.setAttribute("rel", "stylesheet");
-    linkElement.setAttribute("href", "components/Header.css");
+    const linkElement = document.createElement("style");
+    linkElement.textContent = css;
     shadow.appendChild(linkElement);
   }
 }

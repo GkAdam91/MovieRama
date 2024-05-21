@@ -1,3 +1,5 @@
+import css from "bundle-text:./MovieCard.css";
+
 class MovieCard extends HTMLElement {
   constructor() {
     super();
@@ -73,12 +75,11 @@ class MovieCard extends HTMLElement {
 
     const posterElement = document.createElement("img");
     posterElement.setAttribute("class", "poster");
-    posterElement.src = `https://image.tmdb.org/t/p/original/${poster}?api_key=${API_KEY}`;
+    posterElement.src = `https://image.tmdb.org/t/p/original/${poster}?api_key=${process.env.API_KEY}`;
     posterPreloaderElement.appendChild(posterElement);
 
-    const titleElement = document.createElement("h2");
-    titleElement.setAttribute("class", "title");
-    titleElement.innerHTML = title;
+    const titleElement = document.createElement("style");
+    titleElement.textContent = css;
     wrapper.appendChild(titleElement);
 
     // card in list view details
@@ -168,7 +169,7 @@ class MovieCard extends HTMLElement {
   }
 
   async createVideoElement(movieId, activeDetailsElement) {
-    let link = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${API_KEY}`;
+    let link = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${process.env.API_KEY}`;
     let response = await fetch(link);
 
     if (!response.ok) {
@@ -196,7 +197,7 @@ class MovieCard extends HTMLElement {
   }
 
   async createReviewsElement(movieId, activeDetailsElement) {
-    let link = `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}`;
+    let link = `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${process.env.API_KEY}`;
     let response = await fetch(link);
 
     let reviewsElement = document.createElement("div");
@@ -238,7 +239,7 @@ class MovieCard extends HTMLElement {
   }
 
   async createSimilarMoviesElement(movieId, activeDetailsElement) {
-    let link = `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${API_KEY}`;
+    let link = `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${process.env.API_KEY}`;
     let response = await fetch(link);
 
     let similarMoviesElement = document.createElement("div");

@@ -9,7 +9,7 @@ class Spinner extends HTMLElement{
         spinner.setAttribute("class", "spinner");
 
         spinner.innerHTML = `Spinning... <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" alt="spinner" />`;
-
+        
         shadow.appendChild(spinner);
     }
 }

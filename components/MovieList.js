@@ -1,3 +1,5 @@
+import css from "bundle-text:./MovieList.css";
+import { Genres } from "../models/Genres";
 class MovieList extends HTMLElement {
   static observedAttributes = ["fetching"];
   shadow;
@@ -16,10 +18,9 @@ class MovieList extends HTMLElement {
     this.spinner = document.createElement("custom-spinner");
     this.shadow.appendChild(this.spinner);
 
-    const linkElement = document.createElement("link");
-    linkElement.setAttribute("rel", "stylesheet");
-    linkElement.setAttribute("href", "components/MovieList.css");
-    this.shadow.appendChild(linkElement);
+    const linkElement = document.createElement("style");
+    linkElement.textContent = css;
+    this.movieListElement.appendChild(linkElement);
   }
 
   showMovieListForSearch(searchTerm) {
@@ -72,9 +73,9 @@ class MovieList extends HTMLElement {
   async fetchMovies(page = 1, searchTerm = "") {
     let url;
     if (searchTerm !== "") {
-      url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchTerm}&page=${page}`;
+      url = `${process.env.BASE_URL}/search/movie?api_key=${process.env.API_KEY}&query=${searchTerm}&page=${page}`;
     } else {
-      url = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&page=${page}&sort_by=vote_average`;
+      url = `${process.env.BASE_URL}/movie/now_playing?api_key=${process.env.API_KEY}&page=${page}&sort_by=vote_average`;
     }
     let response = await fetch(url);
     if (!response.ok) {
